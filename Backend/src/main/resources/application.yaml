@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: UrlShortner
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/sortUrl
+    username: root
+    password: 45678432
+
+  app:
+    secret: xhnieny239y9cer92xu9emu39u9eu239nu4xc98u894b823nx98mz2
+    expiration: 300000
+    refreshtoken: 172800000
+
+server:
+  servlet:
+    context-path: /api/v1
