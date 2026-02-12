@@ -3,21 +3,20 @@ spring:
     name: UrlShortener
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/sortUrl}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:password}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
 
   app:
-    secret: ${JWT_SECRET:defaultSecretKeyForDevelopmentOnly}
-    expiration: ${JWT_EXPIRATION:300000}
-    refreshtoken: ${JWT_REFRESH_EXPIRATION:172800000}
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION}
+    refreshtoken: ${JWT_REFRESH_EXPIRATION}
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS}
 
 server:
   port: ${SERVER_PORT:8080}
-  servlet:
-    context-path: /api/v1
