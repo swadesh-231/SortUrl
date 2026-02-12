@@ -1,298 +1,210 @@
 # SortUrl - URL Shortener
 
-A full-stack URL shortening service that converts long URLs into short, shareable links with click analytics and expiration support.
+A production-ready full-stack URL shortening service that converts long URLs into short, shareable links with robust analytics, user authentication, and secure link management.
 
-## Features
+## 🚀 Features
 
-- Generate short URLs from long URLs
-- Redirect short URLs to original destinations
-- Track click analytics per URL
-- URL expiration support
-- User authentication (register/login)
-- Copy short URL to clipboard
-- View click statistics and history
-- Responsive web interface
+- **Shorten URLs**: Generate concise, unique short links instantly.
+- **Analytics Dashboard**: Track clicks over time with visual charts.
+- **User Authentication**: Secure registration and login (JWT-based).
+- **Link Management**: View history, copy to clipboard, and delete links.
+- **Responsive Design**: Modern, dark-themed UI built with Tailwind CSS.
+- **Security**: HttpOnly cookies for refresh tokens, password hashing, and input validation.
+- **Scalability**: Collision-proof URL generation algorithm.
 
-## Tech Stack
+---
 
-**Frontend:**
-- React 19
-- Vite
-- JavaScript
-- CSS
+## 🛠️ Tech Stack
 
-**Backend:**
-- Java 21
-- Spring Boot
-- Spring Security with JWT
-- Spring Data JPA
+### **Backend**
+- **Language**: Java 21
+- **Framework**: Spring Boot 3.4
+- **Security**: Spring Security 6 (JWT, HttpOnly Cookies)
+- **Database**: MySQL 8.0 (Spring Data JPA)
+- **Build Tool**: Gradle 8.5
 
-**Database:**
-- MySQL
+### **Frontend**
+- **Framework**: React 19
+- **Build Tool**: Vite 6
+- **Styling**: Tailwind CSS 4, Lucide React (Icons)
+- **State Management**: React Context API
+- **HTTP Client**: Axios (with interceptors)
+- **Charts**: Recharts (for analytics visualization)
+- **Notifications**: React Hot Toast
 
-**Tools:**
-- Gradle
-- npm
+---
 
-## Architecture
-
-### Backend Architecture
-
-The backend follows a layered architecture pattern:
-
-- **Controller Layer** - Handles HTTP requests and responses
-- **Service Layer** - Contains business logic
-- **Repository Layer** - Manages database operations
-- **Security Layer** - JWT-based authentication and authorization
-
-### Frontend Structure
-
-The frontend is a React application built with Vite:
-
-- **Components** - Reusable UI components
-- **Assets** - Static files and images
-- **Styles** - CSS stylesheets
-
-### Request Flow
-
-```
-User -> React Frontend -> REST API -> Service Layer -> Repository -> MySQL Database
-                                                    <- Response <-
-```
-
-1. User interacts with the React frontend
-2. Frontend sends HTTP requests to the Spring Boot API
-3. Controller routes the request to the appropriate service
-4. Service executes business logic and interacts with the repository
-5. Repository performs database operations
-6. Response flows back through the layers to the user
-
-## API Endpoints
-
-### Authentication
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Login and receive JWT token |
-
-### URL Management
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/urls` | Create a new short URL |
-| GET | `/api/urls` | Get all URLs for authenticated user |
-| GET | `/api/urls/{id}` | Get URL details by ID |
-| DELETE | `/api/urls/{id}` | Delete a URL mapping |
-
-### Analytics
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/urls/{id}/clicks` | Get click analytics for a URL |
-
-### Redirect
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/{shortCode}` | Redirect to original URL |
-
-## Screenshots
-
-![Home Page](./screenshots/home.png)
-
-![URL Shortener Form](./screenshots/shortener.png)
-
-![Analytics Dashboard](./screenshots/analytics.png)
-
-## Folder Structure
+## 📂 Project Structure
 
 ```
 SortUrl/
-├── Backend/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/backend/
-│   │   │   │   ├── config/
-│   │   │   │   ├── controller/
-│   │   │   │   │   ├── AuthController.java
-│   │   │   │   │   ├── RedirectController.java
-│   │   │   │   │   └── UrlMappingController.java
-│   │   │   │   ├── dto/
-│   │   │   │   │   ├── request/
-│   │   │   │   │   └── response/
-│   │   │   │   ├── entity/
-│   │   │   │   │   ├── ClickEvent.java
-│   │   │   │   │   ├── UrlMapping.java
-│   │   │   │   │   └── User.java
-│   │   │   │   ├── exception/
-│   │   │   │   ├── mapper/
-│   │   │   │   ├── repository/
-│   │   │   │   ├── security/
-│   │   │   │   │   ├── jwt/
-│   │   │   │   │   └── service/
-│   │   │   │   └── service/
-│   │   │   │       └── impl/
-│   │   │   └── resources/
-│   │   │       └── application.yaml
-│   │   └── test/
-│   ├── build.gradle
-│   └── settings.gradle
+├── Backend/                 # Spring Boot Application
+│   ├── src/main/java/       # Source code
+│   │   ├── config/          # Security & App configurations
+│   │   ├── controller/      # API Endpoints (Auth, Url, Redirect)
+│   │   ├── dto/             # Data Transfer Objects
+│   │   ├── entity/          # JPA Entities (User, UrlMapping, ClickEvent)
+│   │   ├── exception/       # Global Exception Handling
+│   │   ├── repository/      # Database Access Layer
+│   │   ├── service/         # Business Logic
+│   │   └── security/        # JWT & Auth Filters
+│   └── src/main/resources/  # Config files (application.yaml)
 │
-├── Frontend/
+├── Frontend/                # React Application
 │   ├── src/
-│   │   ├── assets/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── public/
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
+│   │   ├── components/      # Reusable UI components
+│   │   ├── context/         # Auth Provider
+│   │   ├── hooks/           # Custom hooks (e.g., useClipboard)
+│   │   ├── pages/           # Dashboard, Login, Register, Landing
+│   │   ├── services/        # API integration
+│   │   └── styles/          # Global styles (Tailwind)
+│   └── public/              # Static assets
 │
-└── README.md
+└── README.md                # Project Documentation
 ```
 
-## Setup Instructions
+---
+
+## ⚙️ Setup Instructions
 
 ### Prerequisites
+- **Java 21** or higher
+- **Node.js 20** or higher
+- **MySQL 8.0** running locally
 
-- Java 17 or higher
-- Node.js 18 or higher
-- MySQL 8.0 or higher
-- Gradle
+### 1. Backend Setup
 
-### Backend Setup
+1.  **Navigate to the backend directory:**
+    ```bash
+    cd Backend
+    ```
 
-1. Navigate to the backend directory:
-   ```bash
-   cd Backend
-   ```
+2.  **Configure Environment Variables:**
+    Create a `.env` file in `Backend/` (or update `src/main/resources/application.yaml`):
+    ```properties
+    DB_URL=jdbc:mysql://localhost:3306/sorturl
+    DB_USERNAME=root
+    DB_PASSWORD=your_password
+    JWT_SECRET=your_secure_random_secret_key_minimum_64_chars
+    JWT_EXPIRATION=300000            # 5 minutes
+    JWT_REFRESH_EXPIRATION=172800000 # 48 hours
+    SERVER_PORT=8080
+    ```
 
-2. Configure the database connection in `src/main/resources/application.yaml`
+3.  **Create Database:**
+    Open your MySQL client and run:
+    ```sql
+    CREATE DATABASE sorturl;
+    ```
 
-3. Create the MySQL database:
-   ```sql
-   CREATE DATABASE sorturl;
-   ```
+4.  **Run the Application:**
+    ```bash
+    ./gradlew bootRun
+    ```
+    The backend will start on `http://localhost:8080`.
 
-4. Build the project:
-   ```bash
-   ./gradlew build
-   ```
+### 2. Frontend Setup
 
-5. Run the application:
-   ```bash
-   ./gradlew bootRun
-   ```
+1.  **Navigate to the frontend directory:**
+    ```bash
+    cd Frontend
+    ```
 
-The backend server will start on `http://localhost:8080`
+2.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
 
-### Frontend Setup
+3.  **Configure Environment Variables:**
+    Create a `.env` file in `Frontend/`:
+    ```properties
+    VITE_API_BASE_URL=http://localhost:8080/api/v1
+    ```
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd Frontend
-   ```
+4.  **Start Development Server:**
+    ```bash
+    npm run dev
+    ```
+    The frontend will start on `http://localhost:5173`.
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+---
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+## 📡 API Documentation
 
-The frontend will start on `http://localhost:5173`
+All API endpoints are prefixed with `/api/v1`.
 
-## Environment Variables
+### **Authentication**
 
-### Backend Configuration
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/auth/register` | Register a new user | ❌ |
+| `POST` | `/auth/login` | Login & receive `accessToken` + `refreshToken` cookie | ❌ |
+| `POST` | `/auth/refresh-token` | Refresh access token using cookie | ❌ |
 
-Configure the following in `src/main/resources/application.yaml`:
+### **URL Management**
 
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/sorturl
-    username: your_username
-    password: your_password
-  jpa:
-    hibernate:
-      ddl-auto: update
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/urls/shorten` | Create a short URL | ✅ |
+| `GET` | `/urls/my-urls` | Get all URLs for current user | ✅ |
+| `DELETE` | `/urls/{shortUrl}` | Delete a URL | ✅ |
 
-jwt:
-  secret: your_jwt_secret_key
-  expiration: 86400000
+### **Analytics**
 
-server:
-  port: 8080
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/urls/analytics/{shortUrl}` | Get analytics (clicks over time) | ✅ |
+| `GET` | `/urls/total-clicks` | Get total clicks for user | ✅ |
+
+### **Redirection**
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/{shortCode}` | Redirect to original URL (302) | ❌ |
+
+---
+
+## 🔐 Security Details
+
+-   **JWT Access Tokens**: Short-lived (5 mins) tokens stored in memory/state.
+-   **Refresh Tokens**: Long-lived (48 hours) tokens stored in **HttpOnly, Secure, SameSite=Strict** cookies. This prevents XSS attacks from stealing long-term access.
+-   **Password Hashing**: BCrypt is used to hash passwords before storing them in the database.
+-   **CORS**: Configured to allow requests only from specific frontend origins (`http://localhost:5173` in dev).
+
+---
+
+## 🧪 Testing
+
+### Backend Tests
+Run the JUnit test suite:
+```bash
+cd Backend
+./gradlew test
 ```
 
-### Frontend Configuration
-
-Create a `.env` file in the Frontend directory:
-
+### Frontend Build Verification
+Verify the production build:
+```bash
+cd Frontend
+npm run build
+npm run preview
 ```
-VITE_API_BASE_URL=http://localhost:8080
-```
 
-## How It Works
+---
 
-1. **User enters a long URL**
-   - The user submits a long URL through the frontend form
+## ⚠️ Troubleshooting
 
-2. **Backend generates a short code**
-   - The service generates a unique hash/code for the URL
-   - A Base62 encoding or similar algorithm creates a short alphanumeric code
+-   **Backend won't start?**
+    -   Check if MySQL is running.
+    -   Verify credentials in `Backend/src/main/resources/application.yaml` or `.env`.
+-   **Frontend API errors?**
+    -   Ensure backend is running on port 8080.
+    -   Check CORS configuration in `Backend/.../config/CorsConfig.java`.
+-   **Login failing loops?**
+    -   If running locally on `http`, ensure `cookie.setSecure(false)` is handled or `Secure` flag logic supports localhost (it does dynamically).
 
-3. **URL mapping is stored in the database**
-   - The original URL, short code, user ID, and expiration date are saved
-   - The UrlMapping entity maintains the relationship
+---
 
-4. **Redirect logic**
-   - When a user visits the short URL, the RedirectController handles the request
-   - It looks up the original URL by short code
-   - If valid and not expired, it redirects to the original URL
-   - A click event is recorded for analytics
+## 📄 License
 
-5. **Analytics tracking**
-   - Each redirect creates a ClickEvent record
-   - Click count, timestamps, and other metrics are stored
-   - Users can view analytics through the dashboard
-
-## Future Improvements
-
-- Custom URL aliases
-- Rate limiting for API endpoints
-- Redis caching for frequently accessed URLs
-- QR code generation for short URLs
-- Bulk URL shortening
-- URL password protection
-- Geographic analytics
-- API key authentication for third-party access
-- URL preview before redirect
-- Admin dashboard
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add your feature description"
-   ```
-4. Push to the branch:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-5. Open a pull request
-
-## License
-
-MIT License
+This project is licensed under the **MIT License**.

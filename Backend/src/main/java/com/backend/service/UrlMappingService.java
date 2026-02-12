@@ -19,4 +19,6 @@ public interface UrlMappingService {
     Map<LocalDate, Long> getTotalClicksByUserAndDate(User user, LocalDate start, LocalDate end);
 
     String getOriginalUrlAndRecordClick(String shortUrl);
+
+    void deleteUrl(String shortUrl, User user);
 }

@@ -1,6 +1,5 @@
 package com.backend.controller;
 
-
 import com.backend.dto.request.CreateUrlRequest;
 import com.backend.dto.response.ClickEventResponse;
 import com.backend.dto.response.UrlMappingResponse;
@@ -31,7 +30,7 @@ public class UrlMappingController {
     @PostMapping("/shorten")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UrlMappingResponse> createShortUrl(@Valid @RequestBody CreateUrlRequest request,
-                                                             Principal principal) {
+            Principal principal) {
         User user = userService.findByUsername(principal.getName());
         UrlMappingResponse response = urlMappingService.createShortUrl(request.getOriginalUrl(), user);
         return ResponseEntity.ok(response);
@@ -74,5 +73,13 @@ public class UrlMappingController {
 
         Map<LocalDate, Long> totalClicks = urlMappingService.getTotalClicksByUserAndDate(user, start, end);
         return ResponseEntity.ok(totalClicks);
+    }
+
+    @DeleteMapping("/{shortUrl}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> deleteUrl(@PathVariable String shortUrl, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        urlMappingService.deleteUrl(shortUrl, user);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,16 +1,17 @@
 package com.backend.service.impl;
 
-
 import com.backend.dto.response.ClickEventResponse;
 import com.backend.dto.response.UrlMappingResponse;
 import com.backend.entity.ClickEvent;
 import com.backend.entity.UrlMapping;
 import com.backend.entity.User;
+import com.backend.exception.ResourceNotFoundException;
 import com.backend.mapper.UrlMappingMapper;
 import com.backend.repository.ClickEventRepository;
 import com.backend.repository.UrlMappingRepository;
 import com.backend.service.UrlMappingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,16 +37,29 @@ public class UrlMappingServiceImpl implements UrlMappingService {
     @Override
     @Transactional
     public UrlMappingResponse createShortUrl(String originalUrl, User user) {
-        UrlMapping urlMapping = UrlMapping.builder()
-                .originalUrl(originalUrl)
-                .shortUrl(generateShortUrl())
-                .user(user)
-                .createdDate(LocalDateTime.now())
-                .clickCount(0)
-                .build();
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                String shortUrl = generateShortUrl();
+                UrlMapping urlMapping = UrlMapping.builder()
+                        .originalUrl(originalUrl)
+                        .shortUrl(shortUrl)
+                        .user(user)
+                        .createdDate(LocalDateTime.now())
+                        .clickCount(0)
+                        .build();
 
-        UrlMapping savedMapping = urlMappingRepository.save(urlMapping);
-        return urlMappingMapper.toResponse(savedMapping);
+                UrlMapping savedMapping = urlMappingRepository.save(urlMapping);
+                return urlMappingMapper.toResponse(savedMapping);
+            } catch (Exception e) {
+                // If collision or other error, retry
+                attempts++;
+                if (attempts == 3) {
+                    throw new RuntimeException("Failed to generate unique short URL after 3 attempts", e);
+                }
+            }
+        }
+        throw new RuntimeException("Failed to generate unique short URL");
     }
 
     @Override
@@ -104,6 +118,19 @@ public class UrlMappingServiceImpl implements UrlMappingService {
         clickEventRepository.save(event);
 
         return mapping.getOriginalUrl();
+    }
+
+    @Override
+    @Transactional
+    public void deleteUrl(String shortUrl, User user) {
+        UrlMapping mapping = urlMappingRepository.findByShortUrl(shortUrl);
+        if (mapping == null) {
+            throw new ResourceNotFoundException("URL", "shortUrl", shortUrl);
+        }
+        if (!mapping.getUser().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You are not authorized to delete this URL");
+        }
+        urlMappingRepository.delete(mapping);
     }
 
     private String generateShortUrl() {

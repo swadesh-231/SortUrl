@@ -1,17 +1,23 @@
 spring:
   application:
-    name: UrlShortner
+    name: UrlShortener
 
   datasource:
-    url: jdbc:mysql://localhost:3306/sortUrl
-    username: root
-    password: 45678432
+    url: ${DB_URL:jdbc:mysql://localhost:3306/sortUrl}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
 
   app:
-    secret: xhnieny239y9cer92xu9emu39u9eu239nu4xc98u894b823nx98mz2
-    expiration: 300000
-    refreshtoken: 172800000
+    secret: ${JWT_SECRET:defaultSecretKeyForDevelopmentOnly}
+    expiration: ${JWT_EXPIRATION:300000}
+    refreshtoken: ${JWT_REFRESH_EXPIRATION:172800000}
 
 server:
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /api/v1

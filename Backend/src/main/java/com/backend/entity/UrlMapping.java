@@ -17,6 +17,7 @@ public class UrlMapping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String originalUrl;
+    @Column(unique = true)
     private String shortUrl;
     @Builder.Default
     private int clickCount = 0;
@@ -26,6 +27,6 @@ public class UrlMapping {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "urlMapping")
+    @OneToMany(mappedBy = "urlMapping", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClickEvent> clickEvents;
 }

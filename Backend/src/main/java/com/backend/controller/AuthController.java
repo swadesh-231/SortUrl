@@ -1,6 +1,5 @@
 package com.backend.controller;
 
-
 import com.backend.dto.request.LoginRequest;
 import com.backend.dto.request.RegisterRequest;
 import com.backend.dto.response.AuthResponse;
@@ -11,6 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,16 +35,24 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Value("${spring.app.refreshtoken}")
+    private Long refreshExpiration;
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest,
-            HttpServletResponse response) {
+            HttpServletResponse response,
+            HttpServletRequest request) {
         LoginResponse loginResponse = authService.login(loginRequest);
 
-        Cookie cookie = new Cookie("refreshToken", loginResponse.getRefreshToken());
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+                .httpOnly(true)
+                .secure(request.isSecure()) // Dynamic: true if https, false if http (localhost)
+                .path("/")
+                .maxAge(refreshExpiration / 1000)
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(LoginResponse.builder()
                 .accessToken(loginResponse.getAccessToken())
