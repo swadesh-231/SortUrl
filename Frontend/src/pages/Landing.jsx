@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Zap, BarChart3, Shield, Link2, ArrowRight } from 'lucide-react';
+import { Zap, BarChart3, Shield, Link2, ArrowRight, LayoutDashboard } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import MainLayout from '../components/layout/MainLayout';
 import Button from '../components/ui/Button';
 
@@ -32,6 +33,7 @@ const fadeUp = {
 };
 
 const Landing = () => {
+    const { isAuthenticated } = useAuth();
     return (
         <MainLayout>
             {/* Hero */}
@@ -62,16 +64,26 @@ const Landing = () => {
                     className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
                     variants={fadeUp} initial="hidden" animate="visible" custom={3}
                 >
-                    <Link to="/register">
-                        <Button size="lg" icon={ArrowRight}>
-                            Get Started — It&apos;s Free
-                        </Button>
-                    </Link>
-                    <Link to="/login">
-                        <Button variant="secondary" size="lg">
-                            Sign In
-                        </Button>
-                    </Link>
+                    {isAuthenticated ? (
+                        <Link to="/dashboard">
+                            <Button size="lg" icon={LayoutDashboard}>
+                                Go to Dashboard
+                            </Button>
+                        </Link>
+                    ) : (
+                        <>
+                            <Link to="/register">
+                                <Button size="lg" icon={ArrowRight}>
+                                    Get Started — It&apos;s Free
+                                </Button>
+                            </Link>
+                            <Link to="/login">
+                                <Button variant="secondary" size="lg">
+                                    Sign In
+                                </Button>
+                            </Link>
+                        </>
+                    )}
                 </motion.div>
 
                 {/* Hero visual — mock card */}

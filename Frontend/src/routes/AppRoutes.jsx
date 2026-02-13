@@ -26,7 +26,7 @@ const PublicRoute = ({ children }) => {
 const AppRoutes = () => (
     <Suspense fallback={<PageLoader />}>
         <Routes>
-            <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
+            <Route path="/" element={<Landing />} />
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
